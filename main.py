@@ -32,6 +32,12 @@ def download_video(url):
     video_link = response.json()['video_data']['nwm_video_url_HQ']
     return video_link
 
+def download_photo(url):
+    request_url = f'https://api.douyin.wtf/api?url={url}'
+    response = requests.get(request_url, headers=headers)
+    photo_link = response.json()['video_data']['no_watermark_image_list']
+    return photo_link
+
 
 # @dp.message_handler(commands=['start', 'help'])
 # async def send_welcome(message: types.Message):
@@ -79,8 +85,15 @@ async def process_name(message: types.Message, state: FSMContext):
         await message.reply_video(video_link, caption=caption, parse_mode=ParseMode.HTML)
         await message.delete()
         return await download.name.set()
+    if re.compile('https://[a-zA-Z]+.tiktok.com/').match(message.text):
+        photo_link = download_photo(message.text)
+        caption = hlink("Ссылка", message.text), hlink(message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
+        await message.reply_photo(photo_link, caption=caption, parse_mode=ParseMode.HTML)
+        await message.delete()
+        return await download.name.set()
     else:
         await message.answer('⛔️ Anda mengirim tautan yang tidak didukung oleh bot!\nKetik /help untuk bantuan')
+    
 
 # @dp.inline_handler()
 # async def inline_handler(querry: types.InlineQuery):
