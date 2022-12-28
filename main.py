@@ -1,16 +1,14 @@
 import re
-import multiprocessing
 import requests
-from bs4 import BeautifulSoup
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.utils.markdown import hlink
-from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
-from aiogram.types import ParseMode, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, InputTextMessageContent, InlineQueryResultArticle
+from aiogram.types import ParseMode
 
-API_TOKEN = '5957238015:AAHpPAIqxW5PePj0IkMeDx2gfCOky82yhkc'
+# API_TOKEN = '5957238015:AAHpPAIqxW5PePj0IkMeDx2gfCOky82yhkc'
+API_TOKEN = '5936321734:AAGhSAa2QgupRPjPgX2j38pol2jBjofejOo'
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
@@ -27,49 +25,16 @@ headers = {
                   'Version/4.0.4 Mobile/7B334b Safari/531.21.102011-10-16 20:23:10'
 }
 
-def download_video(url):
+def download_media(url):
     request_url = f'https://api.douyin.wtf/api?url={url}'
     response = requests.get(request_url, headers=headers)
-    video_link = response.json()['video_data']['nwm_video_url_HQ']
-    return video_link
-
-# def download_photo(url):
-#     request_url = f'https://api.douyin.wtf/api?url={url}'
-#     response = requests.get(request_url, headers=headers)
-#     photo_link = response.json()['image_data']['no_watermark_image_list']
-#     return photo_link
-
-
-# @dp.message_handler(commands=['start', 'help'])
-# async def send_welcome(message: types.Message):
-#     await message.reply(f'Selamat datang, {message.chat.first_name}!\n\nAnda dapat memulai dengan klik /download atau /list \n'
-#                         f'Maka video anda akan saya Download!\n\nSaat ini, saya mendukung '
-#                         f'hanya video dari TikTok!')
-#     btn1 = InlineKeyboardButton('/download', '/download')
-#     btn2 = InlineKeyboardButton('/list', '/list')
-#     markup4 = ReplyKeyboardMarkup(resize_keyboard=True).row(
-#         btn1, btn2
-#     )
-#     await message.answer('Pilih',reply_markup=markup4)
-
-# @dp.message_handler(commands=['list', 'List'])
-# async def send_list(message: types.Message, state: FSMContext):
-#     await Form.name.set()
-#     await message.reply(f'📚 Kirim List Video Tiktok :\n'
-#                         f'Pisahkan setiap link video dengan ↩')
-
-# @dp.message_handler(state=Form.name)
-# async def process_name(message: types.Message, state: FSMContext):
-#     await state.finish()
-#     await message.reply(f"Hello, {message.chat.first_name}!\nMohon tunggu sebentar 😊")
-#     video_list = message.text.split('\n')
-#     counter = 0
-#     while counter < len(video_list):
-#         video_link = download_video(video_list[counter])
-#         await message.reply_video(video_link, caption='Saya senang bisa membantu! Salam, @unduhtiktokbot')
-#         counter = counter + 1
-#     else:
-#         print('Done')
+    media_link = response.json()
+    if media_link.get("type") == "video":
+        video_link = response.json()['video_data']['nwm_video_url_HQ']
+        return video_link
+    if media_link.get("type") == "image":
+        print('Image')
+        return None
 
 @dp.message_handler(commands=['start', 'Start'])
 async def send_welcome(message: types.Message):
@@ -81,43 +46,20 @@ async def send_help(message: types.Message):
     await message.reply(f'Бог поможет')
     
 @dp.message_handler(commands=['rules', 'Rules'])
-async def send_help(message: types.Message):
+async def send_rules(message: types.Message):
     await message.reply(f'Правила бота: \n' f'1. Без алкоголя\n' f'2. Без оскорблений\n' f'3. Без доты\n' f'4. Адекватность приветствуется')
 
 @dp.message_handler(state=download.name)
 async def process_name(message: types.Message, state: FSMContext):
     await state.finish()
     if re.compile('https://[a-zA-Z]+.tiktok.com/').match(message.text):
-        video_link = download_video(message.text)
+        link = download_media(message.text)
         caption = hlink("Ссылка", message.text), hlink(message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
-        await message.reply_video(video_link, caption=caption, parse_mode=ParseMode.HTML)
+        await message.reply_video(link, caption=caption, parse_mode=ParseMode.HTML)
         await message.delete()
         return await download.name.set()
-    # if re.compile('https://[a-zA-Z]+.tiktok.com/').match(message.text):
-    #     photo_link = download_photo(message.text)
-    #     caption = hlink("Ссылка", message.text), hlink(message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
-        
-    #     with multiprocessing.Pool() as pool:
-    #                 input_files = pool.map(download_media, photo_link)
-         
-            
-    #     chunks = [input_files[x : x + 10] for x in range(0, len(input_files), 10)]
-
-    #     chunks[-1][-1].caption = build_caption(item_infos, text, message)
-    #     chunks[-1][-1].parse_mode = ParseMode.HTML
-
-    #     await message.reply_media_group(photo_link)
-    #     await message.delete()
-        
-    #     return await download.name.set()
     else:
-        await message.answer('Походу Бот сломался. Почему он сломался, я не знаю')
+        await message.answer('Походу Бот сломался (может и нет). Почему он сломался, я не знаю.')
     
-
-# @dp.inline_handler()
-# async def inline_handler(querry: types.InlineQuery):
-#     Text = querry.query or "echo"
-#     Link
-#     await querry.answer(art) 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
