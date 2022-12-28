@@ -7,8 +7,8 @@ from aiogram.utils.markdown import hlink
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ParseMode
 
-# API_TOKEN = '5957238015:AAHpPAIqxW5PePj0IkMeDx2gfCOky82yhkc'
-API_TOKEN = '5936321734:AAGhSAa2QgupRPjPgX2j38pol2jBjofejOo'
+API_TOKEN = '5957238015:AAHpPAIqxW5PePj0IkMeDx2gfCOky82yhkc'
+# API_TOKEN = '5936321734:AAGhSAa2QgupRPjPgX2j38pol2jBjofejOo'
 bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
