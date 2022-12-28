@@ -1,4 +1,5 @@
 import re
+import multiprocessing
 import requests
 from bs4 import BeautifulSoup
 from aiogram import Bot, Dispatcher, executor, types
@@ -32,11 +33,11 @@ def download_video(url):
     video_link = response.json()['video_data']['nwm_video_url_HQ']
     return video_link
 
-def download_photo(url):
-    request_url = f'https://api.douyin.wtf/api?url={url}'
-    response = requests.get(request_url, headers=headers)
-    photo_link = response.json()['video_data']['no_watermark_image_list']
-    return photo_link
+# def download_photo(url):
+#     request_url = f'https://api.douyin.wtf/api?url={url}'
+#     response = requests.get(request_url, headers=headers)
+#     photo_link = response.json()['image_data']['no_watermark_image_list']
+#     return photo_link
 
 
 # @dp.message_handler(commands=['start', 'help'])
@@ -71,10 +72,17 @@ def download_photo(url):
 #         print('Done')
 
 @dp.message_handler(commands=['start', 'Start'])
-async def send_video(message: types.Message):
+async def send_welcome(message: types.Message):
     await download.name.set()
     await message.reply(f'Бот работает, скиньте ссылку на ТикТок')
 
+@dp.message_handler(commands=['help', 'Help'])
+async def send_help(message: types.Message):
+    await message.reply(f'Бог поможет')
+    
+@dp.message_handler(commands=['rules', 'Rules'])
+async def send_help(message: types.Message):
+    await message.reply(f'Правила бота: \n' f'1. Без алкоголя\n' f'2. Без оскорблений\n' f'3. Без доты\n' f'4. Адекватность приветствуется')
 
 @dp.message_handler(state=download.name)
 async def process_name(message: types.Message, state: FSMContext):
@@ -85,14 +93,25 @@ async def process_name(message: types.Message, state: FSMContext):
         await message.reply_video(video_link, caption=caption, parse_mode=ParseMode.HTML)
         await message.delete()
         return await download.name.set()
-    if re.compile('https://[a-zA-Z]+.tiktok.com/').match(message.text):
-        photo_link = download_photo(message.text)
-        caption = hlink("Ссылка", message.text), hlink(message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
-        await message.reply_photo(photo_link, caption=caption, parse_mode=ParseMode.HTML)
-        await message.delete()
-        return await download.name.set()
+    # if re.compile('https://[a-zA-Z]+.tiktok.com/').match(message.text):
+    #     photo_link = download_photo(message.text)
+    #     caption = hlink("Ссылка", message.text), hlink(message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
+        
+    #     with multiprocessing.Pool() as pool:
+    #                 input_files = pool.map(download_media, photo_link)
+         
+            
+    #     chunks = [input_files[x : x + 10] for x in range(0, len(input_files), 10)]
+
+    #     chunks[-1][-1].caption = build_caption(item_infos, text, message)
+    #     chunks[-1][-1].parse_mode = ParseMode.HTML
+
+    #     await message.reply_media_group(photo_link)
+    #     await message.delete()
+        
+    #     return await download.name.set()
     else:
-        await message.answer('⛔️ Anda mengirim tautan yang tidak didukung oleh bot!\nKetik /help untuk bantuan')
+        await message.answer('Походу Бот сломался. Почему он сломался, я не знаю')
     
 
 # @dp.inline_handler()
