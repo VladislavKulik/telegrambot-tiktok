@@ -32,13 +32,8 @@ headers = {
 def download_media(url):
     request_url = f'https://api.douyin.wtf/api?url={url}'
     response = requests.get(request_url, headers=headers)
-    media_link = response.json()
-    if media_link.get("type") == "video":
-        video_link = response.json()['video_data']['nwm_video_url_HQ']
-        return video_link
-    if media_link.get("type") == "image":
-        print('Image')
-        return None
+    video_link = response.json()['video_data']['nwm_video_url_HQ']
+    return video_link
 
 
 @dp.message_handler(commands=['start', 'Start'])
