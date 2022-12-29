@@ -65,7 +65,6 @@ async def process_name(message: types.Message, state: FSMContext):
         await message.delete()
         return await download.name.set()
     else:
-        await download.name.set()
         await message.answer('Походу Бот сломался (может и нет). Почему он сломался, я не знаю.')
 
 if __name__ == '__main__':
