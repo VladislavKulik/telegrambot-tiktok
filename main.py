@@ -44,11 +44,13 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(commands=['help', 'Help'])
 async def send_help(message: types.Message):
+    await download.name.set()
     await message.reply(f'Бог поможет')
 
 
 @dp.message_handler(commands=['rules', 'Rules'])
 async def send_rules(message: types.Message):
+    await download.name.set()
     await message.reply(f'Правила бота: \n' f'1. Без алкоголя\n' f'2. Без оскорблений\n' f'3. Без доты\n' f'4. Адекватность приветствуется')
 
 
@@ -63,8 +65,8 @@ async def process_name(message: types.Message, state: FSMContext):
         await message.delete()
         return await download.name.set()
     else:
+        await download.name.set()
         await message.answer('Походу Бот сломался (может и нет). Почему он сломался, я не знаю.')
-        return await download.name.set()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
