@@ -13,17 +13,21 @@ bot = Bot(token=API_TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
 
+
 class Form(StatesGroup):
     name = State()
 
+
 class download(StatesGroup):
     name = State()
+
 
 headers = {
     'Accept-language': 'en',
     'User-Agent': 'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) '
                   'Version/4.0.4 Mobile/7B334b Safari/531.21.102011-10-16 20:23:10'
 }
+
 
 def download_media(url):
     request_url = f'https://api.douyin.wtf/api?url={url}'
@@ -36,30 +40,36 @@ def download_media(url):
         print('Image')
         return None
 
+
 @dp.message_handler(commands=['start', 'Start'])
 async def send_welcome(message: types.Message):
     await download.name.set()
     await message.reply(f'Бот работает, скиньте ссылку на ТикТок')
 
+
 @dp.message_handler(commands=['help', 'Help'])
 async def send_help(message: types.Message):
     await message.reply(f'Бог поможет')
-    
+
+
 @dp.message_handler(commands=['rules', 'Rules'])
 async def send_rules(message: types.Message):
     await message.reply(f'Правила бота: \n' f'1. Без алкоголя\n' f'2. Без оскорблений\n' f'3. Без доты\n' f'4. Адекватность приветствуется')
+
 
 @dp.message_handler(state=download.name)
 async def process_name(message: types.Message, state: FSMContext):
     await state.finish()
     if re.compile('https://[a-zA-Z]+.tiktok.com/').match(message.text):
         link = download_media(message.text)
-        caption = hlink("Ссылка", message.text), hlink(message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
+        caption = hlink("Ссылка", message.text), hlink(
+            message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
         await message.reply_video(link, caption=caption, parse_mode=ParseMode.HTML)
         await message.delete()
         return await download.name.set()
     else:
         await message.answer('Походу Бот сломался (может и нет). Почему он сломался, я не знаю.')
-    
+        return await download.name.set()
+
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
