@@ -29,36 +29,35 @@ headers = {
 }
 
 
-def download_media(url):
-    request_url = f'https://api.douyin.wtf/api?url={url}'
-    response = requests.get(request_url, headers=headers)
-    video_link = response.json()['video_data']['nwm_video_url_HQ']
-    return video_link
+# def download_media(url):
+#     request_url = f'https://api.douyin.wtf/api?url={url}'
+#     response = requests.get(request_url, headers=headers)
+#     video_link = response.json()['video_data']['nwm_video_url_HQ']
+#     return video_link
 
 
 @dp.message_handler(commands=['start', 'Start'])
 async def send_welcome(message: types.Message):
-    download.name.set()
-    message.reply(
-        f'Бот работает, скиньте ссылку на ТикТок')
-
-
-@dp.message_handler(commands=['help', 'Help'])
-async def send_help(message: types.Message):
     await download.name.set()
-    await message.reply(f'Бог поможет')
+    await message.reply(f'Бот работает, скиньте ссылку на ТикТок')
 
 
-@dp.message_handler(commands=['rules', 'Rules'])
-async def send_rules(message: types.Message):
-    await download.name.set()
-    await message.reply(f'Правила бота: \n' f'1. Без алкоголя\n' f'2. Без оскорблений\n' f'3. Без доты\n' f'4. Адекватность приветствуется')
+# @dp.message_handler(commands=['help', 'Help'])
+# async def send_help(message: types.Message):
+#     await download.name.set()
+#     await message.reply(f'Бог поможет')
+
+
+# @dp.message_handler(commands=['rules', 'Rules'])
+# async def send_rules(message: types.Message):
+#     await download.name.set()
+#     await message.reply(f'Правила бота: \n' f'1. Без алкоголя\n' f'2. Без оскорблений\n' f'3. Без доты\n' f'4. Адекватность приветствуется')
 
 
 @dp.message_handler(commands=['analyzer', 'Analyzer'])
-async def send_rules(message: types.Message):
-    download.name.set()
-    message.reply(f'Сентимент: негативний \n' f'Кількість позитивних слів: 0 \n' f'Кількість негативних слів: 2\n'f'Кількість нейтральних слів: 4\n'f'Кількість загальних слів: 9\n')
+async def send_analyzer(message: types.Message):
+    await download.name.set()
+    await message.reply(f'Сентимент: негативний \n' f'Кількість позитивних слів: 0 \n' f'Кількість негативних слів: 2\n'f'Кількість нейтральних слів: 4\n'f'Кількість загальних слів: 9\n')
 
 
 # @dp.message_handler(state=download.name)
