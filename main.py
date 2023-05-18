@@ -38,7 +38,6 @@ headers = {
 
 @dp.message_handler(commands=['start', 'Start'])
 async def send_welcome(message: types.Message):
-    await download.name.set()
     await message.reply(f'Бот работает, скиньте ссылку на ТикТок')
 
 
@@ -56,7 +55,6 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(commands=['analyzer', 'Analyzer'])
 async def send_analyzer(message: types.Message):
-    await download.name.set()
     await message.reply(f'Сентимент: негативний \n' f'Кількість позитивних слів: 0 \n' f'Кількість негативних слів: 2\n'f'Кількість нейтральних слів: 4\n'f'Кількість загальних слів: 9\n')
 
 
