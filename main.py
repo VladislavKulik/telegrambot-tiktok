@@ -39,7 +39,7 @@ def download_media(url):
 @dp.message_handler(commands=['start', 'Start'])
 async def send_welcome(message: types.Message):
     await message.reply(f'Бот работает, скиньте ссылку на ТикТок')
-    await download.name.set()
+    # await download.name.set()
 
 
 @dp.message_handler(commands=['help', 'Help'])
@@ -68,7 +68,7 @@ async def process_name(message: types.Message, state: FSMContext):
             message.from_user.username, "tg://user?id="+str(message.from_user.id)+"")
         await message.reply_video(link, caption=caption, parse_mode=ParseMode.HTML)
         # await message.delete()
-        return await download.name.set()
+        # return await download.name.set()
     else:
         await message.answer('Походу Бот сломался (может и нет). Почему он сломался, я не знаю.')
 
