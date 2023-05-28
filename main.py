@@ -59,9 +59,10 @@ async def send_rules(message: types.Message):
 #     await message.reply(f'Сентимент: негативний \n' f'Кількість позитивних слів: 0 \n' f'Кількість негативних слів: 2\n'f'Кількість нейтральних слів: 4\n'f'Кількість загальних слів: 9\n')
 
 
-@dp.message_handler(state=download.name)
+# @dp.message_handler(state=download.name)
+@dp.message_handler
 async def process_name(message: types.Message, state: FSMContext):
-    await state.finish()
+    # await state.finish()
     if re.compile('https://[a-zA-Z]+.tiktok.com/').match(message.text):
         link = download_media(message.text)
         caption = hlink("Ссылка", message.text), hlink(
